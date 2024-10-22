@@ -15,6 +15,7 @@ import { MsgConvertERC20 } from "./src/codec/shido/erc20/v1/tx";
 function App() {
   const [address, setAddress] = React.useState<string>("");
   const [balance, setBalance] = React.useState<string>("");
+  const [usdcbalance, setBalances] = React.useState<string>("");
   const [recipient, setRecipient] = React.useState<string>("");
   const [nativeRecipient, setNativeRecipient] = React.useState<string>("");
   const [hexSender, setHexSender] = React.useState<string>("");
@@ -91,6 +92,30 @@ function App() {
         setBalance(`${amount.toString(osmoDecimal)} SHIDO`);
       } else {
         setBalance(`0 SHIDO`);
+      }
+    }
+  };
+
+
+  const getUsdcBalance = async () => {
+    const key = await window.keplr?.getKey(OsmosisChainInfo.chainId);
+
+    if (key) {
+      const uri = `${OsmosisChainInfo.rest}/cosmos/bank/v1beta1/balances/${key.bech32Address}?pagination.limit=1000`;
+
+      const data = await api<Balances>(uri);
+      const balance = data.balances.find(
+        (balance) => balance.denom === "ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65"
+      );
+      const osmoDecimal = OsmosisChainInfo.currencies.find(
+        (currency) => currency.usdcMinimalDenom === "ibc/BFAAB7870A9AAABF64A7366DAAA0B8E5065EAA1FCE762F45677DC24BE796EF65"
+      )?.usdcDecimals;
+
+      if (balance) {
+        const amount = new Dec(balance.amount, osmoDecimal);
+        setBalances(`${amount.toString(osmoDecimal)} USDC`);
+      } else {
+        setBalances(`0 USDC`);
       }
     }
   };
@@ -248,6 +273,19 @@ function App() {
             <div>Balance: {balance}</div>
           </div>
         </div>
+
+        <div className="item">
+          <div className="item-title">Get SHIDO USDC Balance</div>
+
+          <div className="item-content">
+            <button className="keplr-button" onClick={getUsdcBalance}>
+              Get Balance
+            </button>
+
+            <div>Balance: {usdcbalance}</div>
+          </div>
+        </div>
+
 
         <div className="item">
           <div className="item-title">Send SHIDO</div>
