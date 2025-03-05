@@ -139,6 +139,7 @@ function App() {
 
       try {
         const gasUsed = await simulateMsgs(
+          window.keplr,
           OsmosisChainInfo,
           key.bech32Address,
           [protoMsgs],
@@ -183,6 +184,7 @@ function App() {
  
       try {
         const gasUsed = await simulateMsgs(
+          window.keplr,
           OsmosisChainInfo,
           key.bech32Address,
           [protoMsgs],

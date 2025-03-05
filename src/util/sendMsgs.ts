@@ -26,7 +26,7 @@ export const sendMsgs = async (
   const account = await fetchAccountInfo(chainInfo, sender);
   console.log("account========",account)
   const { pubKey } = await keplr.getKey(chainInfo.chainId);
-
+  console.log("pubKey========",pubKey)
   if (account) {
     console.log("account========",account)
     const signDoc = {
